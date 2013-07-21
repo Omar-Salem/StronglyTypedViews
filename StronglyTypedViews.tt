@@ -229,7 +229,16 @@ void ModifyWebConfig(EnvDTE.ProjectItem item)
                 var extensionsOutPut = new StringBuilder("public static partial class " + className + "Extensions\n");
                 classOutPut.Append("{\n");
                 extensionsOutPut.Append("{\n");
-                IEnumerable<string> usings = new List<string>();
+                IEnumerable<string> usings = new string[]
+                    {
+                    "System",
+                    "System.Web.Mvc",
+                    "System.Collections",
+                    "System.Collections.Generic",
+                    "System.IO",
+                    "System.Text",
+                    "System.Xml"
+                    };
 
                 foreach (var view in modelViews)
                 {
@@ -257,7 +266,7 @@ void ModifyWebConfig(EnvDTE.ProjectItem item)
                 classOutPut.Append("\n}");
                 extensionsOutPut.Append("\n}");
 
-                var fileOutput = new StringBuilder("using System.Web.Mvc;\n");
+                var fileOutput = new StringBuilder();
 
                 foreach (string dll in usings)
                 {
@@ -287,10 +296,11 @@ void ModifyWebConfig(EnvDTE.ProjectItem item)
     string GetModel(string content)
     {
         var regex = new Regex(@"@model [^\n]*");
-        return regex.Match(content)
+        var modelName= regex.Match(content)
             .Value
             .Replace("@model ", string.Empty)
             .Replace("\r", string.Empty);
+        return modelName;
     }
 
     IEnumerable<string> GetUsings(string content)
