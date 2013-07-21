@@ -10,7 +10,7 @@ _Partial.cshtml
 	@model int
 	<p>@Model</p>
 
-Generated Code:
+Generated Actions:
 
         using System.Web.Mvc;
         
@@ -25,6 +25,12 @@ Generated Code:
             }
         }
 
+Generated Html helper extensions:
+
+	public static void _Partial(this HtmlHelper helper, int model)
+	{
+		helper.RenderPartial("~/Views/Home/_Partial.cshtml", (object)model);
+	}
 Usage:
 
         public virtual ViewResult GetNumber()
