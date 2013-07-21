@@ -32,8 +32,15 @@ Generated Html helper extensions:
 		helper.RenderPartial("~/Views/Home/_Partial.cshtml", (object)model);
 	}
 Usage:
+In controllers:
 
         public virtual ViewResult GetNumber()
         {
             return new StronglyTypedViews.Home()._Partial(16);
         }
+        
+In views:
+
+	    @{
+	        Html._Partial(100);
+	    }
