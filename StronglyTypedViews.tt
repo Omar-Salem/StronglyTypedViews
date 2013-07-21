@@ -225,8 +225,8 @@ void ModifyWebConfig(EnvDTE.ProjectItem item)
 
                 var areaName = area.Key == string.Empty ? string.Empty : area.Key + "_";
                 var className = string.Format("{0}{1}", areaName, action.Key.Replace(".cshtml", string.Empty));
-                var classOutPut = new StringBuilder("public class " + className + " : Controller\n");
-                var extensionsOutPut = new StringBuilder("public static class " + className + "Extensions\n");
+                var classOutPut = new StringBuilder("public partial class " + className + " : Controller\n");
+                var extensionsOutPut = new StringBuilder("public static partial class " + className + "Extensions\n");
                 classOutPut.Append("{\n");
                 extensionsOutPut.Append("{\n");
                 IEnumerable<string> usings = new List<string>();
