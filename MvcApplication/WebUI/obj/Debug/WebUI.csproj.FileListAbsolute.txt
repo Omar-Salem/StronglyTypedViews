@@ -19,3 +19,23 @@ c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\WebUI\bin\Sys
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\WebUI\obj\Debug\WebUI.dll
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\WebUI\obj\Debug\WebUI.pdb
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\WebUI\obj\Debug\WebUI.csprojResolveAssemblyReference.cache
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\WebUI.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\WebUI.pdb
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\EntityFramework.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\Microsoft.Web.Infrastructure.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Helpers.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Mvc.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Providers.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Razor.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Deployment.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Razor.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\EntityFramework.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Helpers.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Mvc.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.Razor.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Deployment.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Razor.xml
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\obj\Debug\WebUI.dll
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\obj\Debug\WebUI.pdb

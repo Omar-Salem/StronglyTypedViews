@@ -8,3 +8,13 @@ c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\EntityFramework.xml
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\obj\Debug\UnitTests.dll
 c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\obj\Debug\UnitTests.pdb
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\UnitTests.dll.config
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\UnitTests.dll
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\UnitTests.pdb
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\WebUI.dll
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\EntityFramework.dll
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\WebUI.pdb
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\bin\Debug\EntityFramework.xml
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\obj\Debug\UnitTests.dll
+D:\Git\StronglyTypedViews\MvcApplication\UnitTests\obj\Debug\UnitTests.pdb

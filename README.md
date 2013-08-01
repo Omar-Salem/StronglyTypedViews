@@ -11,9 +11,9 @@ The template discovers referenced namespaces in .cshtml files, base types (int, 
 
 If the template gives build errors due to undiscovered namespaces,either:
 
-1-Write the fully qualified name of the model to the view(i.e: @model System.Web.UI.HtmlTextWriter)
-
-2-Add the required namespace to the template, line 232.
+-Write the fully qualified name of the model to the view(i.e: @model System.Text.StringBuilder)
+or
+-Add the required namespace to the template, line 492.
 
 	IEnumerable<string> usings = new string[]
 	                    {
@@ -25,49 +25,28 @@ If the template gives build errors due to undiscovered namespaces,either:
 	                    "System.Text",
 	                    "System.Xml"
 	                    };
-Input view
+Input
 ==================
-
-_Partial.cshtml
+-Areas
+ -Administration
+  -Views
+   -Management
+    -GetProduct.cshtml
 	
 	@model int
 	<p>@Model</p>
-
-Output files
-==================
-
-Generated actions:
-
-        using System.Web.Mvc;
-        
-        namespace StronglyTypedViews
-        {
-            public class Home : Controller
-            {
-                public ViewResult _Partial(int model)
-                {
-                    return View("~/Views/Home/_Partial.cshtml", (object)model);
-                }
-            }
-        }
-
-Generated Html helper extensions:
-
-	public static void _Partial(this HtmlHelper helper, int model)
-	{
-		helper.RenderPartial("~/Views/Home/_Partial.cshtml", (object)model);
-	}
-Usage
+	
+How to use
 ==================
 In controllers:
 
-        public virtual ViewResult GetNumber()
+        public ViewResult GetProduct(int id)
         {
-            return new StronglyTypedViews.Home()._Partial(16);
+            return MVCStronglyTypedViews.Areas.Administration.Management.GetProduct(96);
         }
         
 In views:
 
 	    @{
-	        Html._Partial(100);
-	    }
+			@{ Html.RenderPartial(MVCStronglyTypedViews.Areas.Administration.Management.GetProduct(90)); } 
+		}
