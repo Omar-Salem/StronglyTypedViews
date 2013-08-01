@@ -1,0 +1,467 @@
+﻿<#@ template debug="true" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ import namespace="System.Xml" #>
+<#@ assembly name="EnvDte" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Collections.Generic"#>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating"#>
+<# 
+    var visualStudio = (this.Host as IServiceProvider).GetService(typeof(EnvDTE.DTE))
+        as EnvDTE.DTE;
+
+    EnvDTE.Project  project = visualStudio.Solution.FindProjectItem(this.Host.TemplateFile)
+        .ContainingProject as EnvDTE.Project;
+
+    IEnumerable<View> views= GetViews(project.ProjectItems);
+    IEnumerable<FileOutput> files = GenerateFiles(views);
+
+    var manager =new Manager(Host, GenerationEnvironment, true) 
+        { OutputPath = Path.GetDirectoryName(Host.TemplateFile) };
+
+    foreach (FileOutput file in files)
+    {
+        manager.StartBlock(file.Name+".generated.cs");
+        #>
+<#=            file.Content #>
+<#
+        manager.EndBlock();
+    }
+
+    ModifyViewsFolder(project.ProjectItems);
+
+foreach (EnvDTE.ProjectItem folder in project.ProjectItems)
+    {
+        if(folder.Name=="Areas")
+        {
+            foreach (EnvDTE.ProjectItem area in folder.ProjectItems)
+            {
+                ModifyViewsFolder(area.ProjectItems);
+            }
+
+            break;
+        }
+    }
+#>
+
+
+<#    manager.Process(true); #>
+
+ 
+<#+
+
+    void ModifyViewsFolder(EnvDTE.ProjectItems projectItems )
+    {
+        foreach (EnvDTE.ProjectItem folder in projectItems)
+        {
+            if(folder.Name=="Views")
+            {
+                foreach (EnvDTE.ProjectItem item in folder.ProjectItems)
+                {
+                    if (string.Compare(item.Name,"Web.config",true)==0)
+                    {
+                        ModifyWebConfig(item);
+                        return;
+                    }
+                }
+            }        
+        } 
+    }
+
+    
+void ModifyWebConfig(EnvDTE.ProjectItem item)
+    {    
+        XmlDocument xDoc = new XmlDocument();
+        var path=item.FileNames[1];
+        xDoc.Load(path);
+
+        XmlNode  namespaceTag=xDoc.GetElementsByTagName("namespaces")[0];
+        if(namespaceTag.InnerXml.Contains("StronglyTypedViews"))
+        {
+            return;
+        }
+
+        XmlNode xNode = xDoc.CreateNode(XmlNodeType.Element, "add", "");
+        XmlAttribute xKey = xDoc.CreateAttribute("namespace");
+        xKey.Value = "StronglyTypedViews";
+        xNode.Attributes.Append(xKey);
+        namespaceTag.InsertAfter(xNode,namespaceTag.LastChild);
+        xDoc.Save(path);
+    }
+
+    IEnumerable<View> GetViews(EnvDTE.ProjectItems projectItems)
+    {
+        var views = new List<View>();
+
+        foreach (EnvDTE.ProjectItem folder in projectItems)
+        {
+            if (folder.Name == "Views")
+            {
+                views.AddRange(GetViews(folder, "~/Views",string.Empty));
+            }
+            else if (folder.Name == "Areas")
+            {
+                foreach (EnvDTE.ProjectItem area in folder.ProjectItems)
+                {
+                    foreach (EnvDTE.ProjectItem areaFolder in area.ProjectItems)
+                    {
+                        if (areaFolder.Name == "Views")
+                        {
+                            views.AddRange(GetViews(areaFolder, "~/Areas/" + area.Name + "/Views", area.Name));
+                        }
+                    }
+                }
+            }
+        }
+
+        return views;
+    }
+
+    IEnumerable<View> GetViews(EnvDTE.ProjectItem viewsFolder, string path, string area)
+    {
+        var files = new List<View>();
+
+        foreach (EnvDTE.ProjectItem controllerFolder in viewsFolder.ProjectItems)
+        {
+            foreach (EnvDTE.ProjectItem item in controllerFolder.ProjectItems)
+            {
+                var newPath =path+ "/" + controllerFolder.Name + "/";
+                AddView(newPath, area, item, controllerFolder.Name, files);
+            }
+        }
+
+        return files;
+    }
+
+    void AddView(string path, string area, EnvDTE.ProjectItem item, string controllerName, List<View> files)
+    {
+        if (item.ProjectItems.Count == 0)
+        {
+            if (item.Name != "_ViewStart.cshtml" && CheckIsPage(item) /*check its not an empty folder*/)
+            {
+                path += item.Name;
+                View view = GetViewData(item, path, area, controllerName);
+                files.Add(view);
+            }
+        }
+        else
+        {
+            GetViewsRecursive(item, path + item.Name + "/", area, controllerName, files);
+        }
+    }
+
+    void GetViewsRecursive(EnvDTE.ProjectItem item, string path, string area, string controllerName, List<View> files)
+    {
+        foreach (EnvDTE.ProjectItem folder in item.ProjectItems)
+        {
+            AddView(path, area, folder, controllerName, files);
+        }
+    }
+
+    View GetViewData(EnvDTE.ProjectItem item, string path, string area, string action)
+    {
+        return new View
+            {
+                Name = GetName(path),
+                Content = GetDocumentText(item),
+                Path = path,
+                Area = area,
+                Action = action
+                };
+    }
+
+    bool CheckIsPage(EnvDTE.ProjectItem item)
+    {
+        return item.Name.EndsWith(".cshtml") || item.Name.EndsWith(".vbhtml");
+    }
+
+    string GetDocumentText(EnvDTE.ProjectItem page)
+    {
+        if (!page.IsOpen)
+        {
+            page.Open();
+        }
+
+        var document = (EnvDTE.TextDocument)page.Document.Object();
+        var startPoint = document.StartPoint.CreateEditPoint();
+        var endPoint = document.EndPoint.CreateEditPoint();
+        return startPoint.GetText(endPoint);
+    }
+
+    string GetName(string path)
+    {
+        int idx = path.LastIndexOf('/');
+        return path.Substring(idx + 1).Replace(".cshtml", string.Empty);
+    }
+#>
+
+<#+
+    IEnumerable<FileOutput> GenerateFiles(IEnumerable<View> views)
+    {
+        IList<FileOutput> files=new List<FileOutput>();
+        Dictionary<string, IEnumerable<View>> areas = views.GroupBy(v => v.Area).ToDictionary(v => v.Key, v => v.AsEnumerable());
+
+        foreach (var area in areas)
+        {
+            Dictionary<string, IEnumerable<View>> actions = area.Value.GroupBy(v => v.Action).ToDictionary(v => v.Key, v => v.AsEnumerable());
+
+            foreach (var action in actions)
+            {
+                IEnumerable<View> modelViews = action.Value.Where(v => v.Content.IndexOf("@model") > -1);
+
+                if (!modelViews.Any())
+                {
+                    continue;
+                }
+
+                var areaName = area.Key == string.Empty ? string.Empty : area.Key + "_";
+                var className = string.Format("{0}{1}", areaName, action.Key.Replace(".cshtml", string.Empty));
+                var classOutPut = new StringBuilder("public partial class " + className + " : Controller\n");
+                var extensionsOutPut = new StringBuilder("public static partial class " + className + "Extensions\n");
+                classOutPut.Append("{\n");
+                extensionsOutPut.Append("{\n");
+                IEnumerable<string> usings = new string[]
+                    {
+                    "System",
+                    "System.Web.Mvc",
+                    "System.Collections",
+                    "System.Collections.Generic",
+                    "System.IO",
+                    "System.Text",
+                    "System.Xml"
+                    };
+
+                foreach (var view in modelViews)
+                {
+                    if(view.Content.IndexOf("@model") <0)
+                    {
+                        continue;
+                    }
+
+                    usings = usings.Union(GetUsings(view.Content));
+                    string model = GetModel(view.Content);
+
+                    classOutPut.AppendFormat("public ViewResult {0}({1} model)", view.Name, model);
+                    classOutPut.Append("\n{");
+                    classOutPut.AppendFormat("\nreturn View(\"{0}\", (object)model);", view.Path);
+                    classOutPut.Append("\n}");
+                    classOutPut.Append("\n");
+
+                    extensionsOutPut.AppendFormat("public static void {0}(this HtmlHelper helper, {1} model)",view.Name, model);
+                    extensionsOutPut.Append("\n{");
+                    extensionsOutPut.AppendFormat("\nhelper.RenderPartial(\"{0}\", (object)model);", view.Path);
+                    extensionsOutPut.Append("\n}");
+                    extensionsOutPut.Append("\n");
+                }
+
+                classOutPut.Append("\n}");
+                extensionsOutPut.Append("\n}");
+
+                var fileOutput = new StringBuilder();
+
+                foreach (string dll in usings)
+                {
+                    fileOutput.AppendFormat("using {0};\n", dll);
+                }
+
+                fileOutput.Append("namespace StronglyTypedViews\n");
+                fileOutput.Append("\n{\n");
+
+                files.Add( new FileOutput
+                    {
+                        Name = className,
+                        Content =fileOutput+ classOutPut.ToString()+"\n}"
+                        });
+
+                files.Add( new FileOutput
+                    {
+                        Name = className+"Extensions",
+                        Content ="using System.Web.Mvc.Html;\n"+fileOutput+ extensionsOutPut.ToString()+"\n}"
+                        });
+            }
+        }
+
+        return files;
+    }
+
+    string GetModel(string content)
+    {
+        var regex = new Regex(@"@model [^\n]*");
+        var modelName= regex.Match(content)
+            .Value
+            .Replace("@model ", string.Empty)
+            .Replace("\r", string.Empty);
+        return modelName;
+    }
+
+    IEnumerable<string> GetUsings(string content)
+    {
+        var regex = new Regex(@"@using [^;|(]*");
+
+        foreach (Match match in regex.Matches(content))
+        {
+            foreach (Capture capture in match.Captures)
+            {
+                var result = capture.Value.Replace("@using ", string.Empty);
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    yield return result;
+                }
+            }
+        }
+    }
+#>
+
+<#+
+    public class View
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
+        public string Path { get; set; }
+        public string Area { get; set; }
+        public string Action { get; set; }
+    }    
+
+    public class FileOutput
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
+    }
+#>
+
+
+<#+
+
+
+    // T4 Template Block manager for handling multiple file outputs more easily.
+    // Copyright (c) Microsoft Corporation.  All rights reserved.
+    // This source code is made available under the terms of the Microsoft Public License (MS-PL)
+
+    // Manager class records the various blocks so it can split them up
+    class Manager
+    {
+        private struct Block {
+            public String Name;
+            public int Start, Length;
+        }
+
+        private List<Block> blocks = new List<Block>();
+        private Block currentBlock;
+        private Block footerBlock = new Block();
+        private Block headerBlock = new Block();
+        private ITextTemplatingEngineHost host;
+        private ManagementStrategy strategy;
+        private StringBuilder template;
+        public String OutputPath { get; set; }
+
+        public Manager(ITextTemplatingEngineHost host, StringBuilder template, bool commonHeader) {
+            this.host = host;
+            this.template = template;
+            OutputPath = String.Empty;
+            strategy = ManagementStrategy.Create(host);
+        }
+
+        public void StartBlock(String name) {
+            currentBlock = new Block { Name = name, Start = template.Length };
+        }
+
+        public void StartFooter() {
+            footerBlock.Start = template.Length;
+        }
+
+        public void EndFooter() {
+            footerBlock.Length = template.Length - footerBlock.Start;
+        }
+
+        public void StartHeader() {
+            headerBlock.Start = template.Length;
+        }
+
+        public void EndHeader() {
+            headerBlock.Length = template.Length - headerBlock.Start;
+        }	
+
+        public void EndBlock() {
+            currentBlock.Length = template.Length - currentBlock.Start;
+            blocks.Add(currentBlock);
+        }
+
+        public void Process(bool split) {
+            String header = template.ToString(headerBlock.Start, headerBlock.Length);
+            String footer = template.ToString(footerBlock.Start, footerBlock.Length);
+            blocks.Reverse();
+            foreach(Block block in blocks) {
+                String fileName = Path.Combine(OutputPath, block.Name);
+                if (split) {
+                    String content = header + template.ToString(block.Start, block.Length) + footer;
+                    strategy.CreateFile(fileName, content);
+                    template.Remove(block.Start, block.Length);
+                } else {
+                    strategy.DeleteFile(fileName);
+                }
+            }
+        }
+    }
+
+    class ManagementStrategy
+    {
+        internal static ManagementStrategy Create(ITextTemplatingEngineHost host) {
+            return (host is IServiceProvider) ? new VSManagementStrategy(host) : new ManagementStrategy(host);
+        }
+
+        internal ManagementStrategy(ITextTemplatingEngineHost host) { }
+
+        internal virtual void CreateFile(String fileName, String content) {
+            File.WriteAllText(fileName, content);
+        }
+
+        internal virtual void DeleteFile(String fileName) {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+        }
+    }
+
+    class VSManagementStrategy : ManagementStrategy
+    {
+        private EnvDTE.ProjectItem templateProjectItem;
+
+        internal VSManagementStrategy(ITextTemplatingEngineHost host) : base(host) {
+            IServiceProvider hostServiceProvider = (IServiceProvider)host;
+            if (hostServiceProvider == null)
+                throw new ArgumentNullException("Could not obtain hostServiceProvider");
+
+            EnvDTE.DTE dte = (EnvDTE.DTE)hostServiceProvider.GetService(typeof(EnvDTE.DTE));
+            if (dte == null)
+                throw new ArgumentNullException("Could not obtain DTE from host");
+
+            templateProjectItem = dte.Solution.FindProjectItem(host.TemplateFile);
+        }
+
+        internal override void CreateFile(String fileName, String content) {
+            base.CreateFile(fileName, content);
+            ((EventHandler)delegate { templateProjectItem.ProjectItems.AddFromFile(fileName); }).BeginInvoke(null, null, null, null);
+        }
+
+        internal override void DeleteFile(String fileName) {
+            ((EventHandler)delegate { FindAndDeleteFile(fileName); }).BeginInvoke(null, null, null, null);
+        }
+
+        private void FindAndDeleteFile(String fileName) {
+            foreach(EnvDTE.ProjectItem projectItem in templateProjectItem.ProjectItems) {
+			        if(        projectItem.get_FileNames(0) == fileName) {
+                    projectItem.Delete();
+                    return;
+                }
+            }
+        }
+    }#>

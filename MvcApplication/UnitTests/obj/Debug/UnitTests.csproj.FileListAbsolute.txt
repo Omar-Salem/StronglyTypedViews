@@ -1,0 +1,10 @@
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\UnitTests.dll.config
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\UnitTests.dll
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\UnitTests.pdb
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\WebUI.dll
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\EntityFramework.dll
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\WebUI.pdb
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\bin\Debug\EntityFramework.xml
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\obj\Debug\UnitTests.dll
+c:\users\omar\documents\visual studio 2012\Projects\MvcApplication\UnitTests\obj\Debug\UnitTests.pdb

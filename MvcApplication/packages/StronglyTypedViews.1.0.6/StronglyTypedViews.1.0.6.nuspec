@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>StronglyTypedViews</id>
+    <version>1.0.6</version>
+    <authors>Omar Salem</authors>
+    <owners>Omar Salem</owners>
+    <projectUrl>https://github.com/Omar-Salem/StronglyTypedViews</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Avoid runtime error "The model item passed into the dictionary is of type ‘X’ but this dictionary requires a model item of type ‘Y‘".
+
+The template generates truly strongly typed views to use in your controllers with zero configuration.</description>
+    <tags>mvc</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Web.Mvc" targetFramework="" />
+    </frameworkAssemblies>
+    <references />
+  </metadata>
+</package>
