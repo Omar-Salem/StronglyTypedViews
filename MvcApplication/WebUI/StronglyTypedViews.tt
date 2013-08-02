@@ -96,12 +96,10 @@ foreach (FileOutput file in files)
             {
 #>
         public  <#=                    file.AreaName #>Class <#=                    file.AreaName #> = new <#=                    file.AreaName #>Class();
-    }
-
  <#            }
-        } 
-
+        } #>
     }
+   <# }
 foreach (FileOutput file in files)
     {  
         if  (file.IsArea)
@@ -113,7 +111,6 @@ foreach (FileOutput file in files)
        <# }
     }
 #>
-    
 }
 
 <#    manager.Process(true); #>

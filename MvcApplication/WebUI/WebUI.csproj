@@ -103,6 +103,11 @@
     </Compile>
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
     <Compile Include="Areas\Administration\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Backend\BackendAreaRegistration.cs" />
+    <Compile Include="Areas\Backend\Controllers\ManagementController.cs" />
+    <Compile Include="Backend.Management.generated.cs">
+      <DependentUpon>StronglyTypedViews.tt</DependentUpon>
+    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -181,6 +186,8 @@
     <Content Include="Areas\Administration\Views\Web.config" />
     <Content Include="Areas\Administration\Views\Management\Index.cshtml" />
     <Content Include="Areas\Administration\Views\Management\GetProduct.cshtml" />
+    <Content Include="Areas\Backend\Views\Web.config" />
+    <Content Include="Areas\Backend\Views\Management\GetProduct.cshtml" />
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
@@ -228,6 +235,8 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Administration\Models\" />
     <Folder Include="Areas\Administration\Views\Shared\" />
+    <Folder Include="Areas\Backend\Models\" />
+    <Folder Include="Areas\Backend\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

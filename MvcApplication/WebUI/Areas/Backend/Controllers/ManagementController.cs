@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using WebUI.Models;
 
-namespace WebUI.Areas.Administration.Controllers
+namespace WebUI.Areas.Backend.Controllers
 {
     public class ManagementController : Controller
     {
         //
-        // GET: /Administration/Management/
+        // GET: /Backend/Management/
 
         public ActionResult Index()
         {
             return View();
         }
 
-        public ViewResult GetProduct(int id)
+        public ActionResult GetProduct(int prodId)
         {
-            return View("GetProduct", id);
+            return View(prodId);
         }
+
     }
 }

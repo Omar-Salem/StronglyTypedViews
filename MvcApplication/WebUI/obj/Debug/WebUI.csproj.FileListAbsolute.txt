@@ -39,3 +39,4 @@ D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Deploymen
 D:\Git\StronglyTypedViews\MvcApplication\WebUI\bin\System.Web.WebPages.Razor.xml
 D:\Git\StronglyTypedViews\MvcApplication\WebUI\obj\Debug\WebUI.dll
 D:\Git\StronglyTypedViews\MvcApplication\WebUI\obj\Debug\WebUI.pdb
+D:\Git\StronglyTypedViews\MvcApplication\WebUI\obj\Debug\WebUI.csprojResolveAssemblyReference.cache
