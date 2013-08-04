@@ -260,6 +260,7 @@ foreach (FileOutput file in files)
                 var classOutPut = new StringBuilder("public partial class " + controllerName + " : Controller\n");
                 classOutPut.Append("{\n");
 
+                IEnumerable<string>usings=new string[]{};
                 foreach (var view in modelViews)
                 {
                     if(view.Content.IndexOf("@model") <0)
@@ -267,7 +268,7 @@ foreach (FileOutput file in files)
                         continue;
                     }
 
-                    usings = usings.Union(GetUsings(view.Content));
+                    usings = defaultNameSpaces.Union(GetUsings(view.Content));
                     string model = GetModel(view.Content);
 
                     classOutPut.AppendFormat("public ViewResult {0}({1} model)", view.Name, model);
@@ -486,7 +487,7 @@ foreach (FileOutput file in files)
     }#>
 
 <#+ 
-    IEnumerable<string>usings=   new string[]
+    IEnumerable<string>defaultNameSpaces=   new string[]
         {
         "System",
         "System.Web.Mvc",

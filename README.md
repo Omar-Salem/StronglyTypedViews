@@ -30,7 +30,7 @@ or
 
 -Add the required namespace to the template, line 492.
 
-	IEnumerable<string> usings = new string[]
+	IEnumerable<string> defaultNameSpaces = new string[]
 	                    {
 	                    "System",
 	                    "System.Web.Mvc",
