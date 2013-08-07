@@ -70,8 +70,7 @@ namespace System.Web.Mvc
     public static class MVCStronglyTypedViews
     {
 <#
-    bool areasExist=CheckAreasExist(files);
-     if(areasExist)
+     if(files.Where(f=>f.IsArea).Any())
     {#> 
         public static Areas Areas = new Areas();
 <#    }
@@ -86,17 +85,15 @@ foreach (FileOutput file in files)
     }
 
 <#
-            if(areasExist)
+            if(files.Where(f=>f.IsArea).Any())
     {#> 
     public class Areas
     {
-<#        foreach (FileOutput file in files)
+<#        foreach (FileOutput file in files.Where(f=>f.IsArea))
         {
-            if(file.IsArea)
-            {
-#>
+		#>
         public  <#=                    file.AreaName #>Class <#=                    file.AreaName #> = new <#=                    file.AreaName #>Class();
- <#            }
+ <#            
         } #>
     }
    <# }
@@ -117,18 +114,6 @@ foreach (FileOutput file in files)
 
  
 <#+    
-        bool CheckAreasExist(IEnumerable<FileOutput> files)
-    {
-        foreach (FileOutput file in files)
-        {
-            if(file.IsArea)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     IEnumerable<View> GetViews(EnvDTE.ProjectItems projectItems)
     {
