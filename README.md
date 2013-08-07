@@ -53,13 +53,24 @@ Input
 	
 How to use
 ==================
+1-Run template
+2-Build Project
+
 In controllers:
 
         public ViewResult GetProduct(int id)
         {
             return MVCStronglyTypedViews.Areas.Administration.Management.GetProduct(id);
         }
-        
+		
+to return as Partial View:
+		
+		public virtual PartialViewResult Edit(int id)
+        {
+            var viewResult = MVCStronglyTypedViews.Areas.Administration.Management.GetProduct(id);
+            return MVCStronglyTypedViews.ControllerExtensions.PartialView(viewResult);
+        }
+
 In views:
 
 	    @{

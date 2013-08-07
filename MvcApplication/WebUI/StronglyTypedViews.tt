@@ -61,6 +61,14 @@ namespace System.Web.Mvc
             return helper.Partial(viewResult.ViewName, viewResult.Model);
         }
     }
+
+	public class StronglyTypedViewsControllerExtensions : Controller
+    {
+        internal PartialViewResult PartialView(ViewResult viewResult)
+        {
+            return PartialView(viewResult.ViewName, viewResult.Model);
+        }
+    }
 }
 <#
         manager.EndBlock();
@@ -74,14 +82,15 @@ namespace System.Web.Mvc
     {#> 
         public static Areas Areas = new Areas();
 <#    }
-foreach (FileOutput file in files)
+foreach (FileOutput file in files.Where(f=>!f.IsArea))
     {         
-        if(!file.IsArea)
-        {#>      
+        #>      
         public static StronglyTypedViews.<#=                file.Name #> <#=                file.Name #> = new StronglyTypedViews.<#=                file.Name #>();
-<#        } 
+<#        
         
    } #>
+
+		public static StronglyTypedViewsControllerExtensions ControllerExtensions = new StronglyTypedViewsControllerExtensions();
     }
 
 <#
