@@ -239,6 +239,7 @@ foreach (FileOutput file in files)
         foreach (var area in areas)
         {
             Dictionary<string, IEnumerable<View>> controllers = area.Value.GroupBy(v => v.Action).ToDictionary(v => v.Key, v => v.AsEnumerable());
+            IEnumerable<string>usings=defaultNameSpaces;
 
             foreach (var controller in controllers)
             {
@@ -254,7 +255,6 @@ foreach (FileOutput file in files)
                 var classOutPut = new StringBuilder("public partial class " + controllerName + " : Controller\n");
                 classOutPut.Append("{\n");
 
-                IEnumerable<string>usings=new string[]{};
                 foreach (var view in modelViews)
                 {
                     if(view.Content.IndexOf("@model") <0)
@@ -262,10 +262,11 @@ foreach (FileOutput file in files)
                         continue;
                     }
 
-                    usings = defaultNameSpaces.Union(GetUsings(view.Content));
+                    IEnumerable<string> modelUsings=GetUsings(view.Content);
+                    usings = usings.Union(modelUsings);
                     string model = GetModel(view.Content);
 
-                    classOutPut.AppendFormat("public ViewResult {0}({1} model)", view.Name, model);
+                    classOutPut.AppendFormat("public ViewResult {0}({1} model)", view.Name.Replace(".", "_"), model);
                     classOutPut.Append("\n{");
                     classOutPut.AppendFormat("\nreturn View(\"{0}\", (object)model);", view.Path);
                     classOutPut.Append("\n}");

@@ -14,4 +14,12 @@ namespace System.Web.Mvc
             return helper.Partial(viewResult.ViewName, viewResult.Model);
         }
     }
+
+	public class StronglyTypedViewsControllerExtensions : Controller
+    {
+        internal PartialViewResult PartialView(ViewResult viewResult)
+        {
+            return PartialView(viewResult.ViewName, viewResult.Model);
+        }
+    }
 }
