@@ -28,18 +28,9 @@ If the template gives build errors due to undiscovered namespaces,either:
 
 or
 
--Add the required namespace to the template, line 492.
+-Add the required namespace to the view:
 
-	IEnumerable<string> defaultNameSpaces = new string[]
-	                    {
-	                    "System",
-	                    "System.Web.Mvc",
-	                    "System.Collections",
-	                    "System.Collections.Generic",
-	                    "System.IO",
-	                    "System.Text",
-	                    "System.Xml"
-	                    };
+	@using System.Text;
 Input
 ==================
 -Areas
